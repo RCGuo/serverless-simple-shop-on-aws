@@ -1,0 +1,198 @@
+.App {
+  margin-top: 10px;
+  max-width: '100%';
+  min-height: 100vh;
+  position: relative;
+}
+
+.App .container {
+  margin-right: 0px;
+  margin-left: 0px;
+}
+
+.App .navbar {
+  background: #fff !important;
+  font-size: 1rem;
+}
+
+footer {
+  background: #525252;
+  padding: 1.5rem;
+}
+
+.App .navbar-brand {
+  font-weight: bold;
+  font-family: sans-serif;
+  height: 50px;
+  font-size: 1.3rem;
+}
+
+.lander h1 {
+  color: #333333;
+}
+
+.orange {
+  color: #F69827;
+}
+
+.white {
+  color: #fff;
+}
+
+.App .grey-background {
+  background-color: rgb(245, 246, 249);
+}
+
+.shopping-icon-container{
+	background-color: #F69827;
+	padding: 2px 12px 0 12px;
+	border-radius: 14px;
+	margin-right: -24px;
+}
+
+.not-found {
+  padding-top: 100px;
+  text-align: center;
+}
+
+.past-order-container table tr td {
+  border-left: none;
+  border-right: none;
+  vertical-align: middle;
+  color: #333333;
+}
+
+.search-result-container table tr td {
+  border-left: none;
+  border-right: none;
+  vertical-align: middle;
+  color: #333333;
+}
+
+.search-result-container #product-image {
+  width: auto;
+  max-width: 60%;
+  object-fit:cover;
+}
+
+.tabs-container table {
+  color: #706E6C;
+}
+
+.favorite-tab #product-image {
+  width: auto;
+  max-width: 60%;
+  object-fit:cover;
+}
+
+.cart-title {
+  font-size: 1.7rem;
+}
+
+.cart-container table {
+  border-collapse:separate;
+}
+
+.cart-container table.orders-in-cart thead th {
+  border-bottom: 1px solid #d6d3d3;
+  color: #929292;
+  font-size: 0.8rem;
+  text-align: left;
+}
+
+.cart-container table td {
+  border-bottom: 1px solid #d6d3d3;
+}
+
+.cart-container table tr th, 
+.cart-container table tr td {
+  border-left: none;
+  border-right: none;
+  vertical-align: middle;
+  color: #333333;
+}
+
+.order-fee {
+  font-size: 1.4rem;
+}
+
+.order-fee .fee-title {
+  width: 80%;
+}
+
+.order-fee #product-price {
+  width: 20%;
+  color:#BD1F3E;
+  padding-right: 20px;
+}
+
+.checkout-container .checkout-title {
+  font-size: 1.7rem;
+}
+
+.checkout-container .credit-card-testing {
+  color: #696767;
+  max-width: fit-content;
+}
+
+.checkout-container .credit-card-testing table button {
+  background-color: transparent;
+  border-color: transparent;
+  border: none;
+}
+
+.checkout-container .credit-card-testing table button div {
+  display: inline-flex;
+  margin-left: 8px;
+}
+
+.checkout-container .card-number span + span {
+  margin-left: 10px;
+}
+
+.checkout-container .credit-card-testing table tr th,
+.checkout-container .credit-card-testing table tr td {
+  text-align: center;
+  font-size: 0.8rem;
+}
+
+.amplify-button[data-variation='primary'] {
+  background-color: #ff8c00d2;
+}
+
+.amplify-button[data-variation='primary']:hover {
+  background-color: #c76f03;
+}
+
+.amplify-button--link {
+  color: #ff8c00d2;
+}
+
+.amplify-button--link:hover {
+  color: #db7a03;
+  background-color: #fff0d1;
+}
+
+.amplify-tabs button[aria-selected="true"] {
+  color: #ff8c00d2;
+  border-color:#ff8c00d2;
+}
+
+.amplify-tabs button[aria-selected="true"]:hover {
+  color: #c76f03;
+}
+
+.amplify-tabs button[aria-selected="false"] {
+  color: #c76f03;
+}
+
+.amplify-tabs button[aria-selected="false"]:hover {
+  color: #f08502;
+}
+
+.category-view-title, 
+.topic-view-title,
+.search-result-title {
+  color: #515151;
+  text-align: center;
+}

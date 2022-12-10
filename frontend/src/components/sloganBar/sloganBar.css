@@ -1,0 +1,29 @@
+.slogan-bar-container .btn-warning {
+  background-color: orange;
+  border-color: #525252;
+  border-radius: 0px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+.slogan-bar-container .form-control {
+  border-radius: 0px;
+  border-color: #525252;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+.slogan-bar-container {
+  background-color: #525252;
+  padding-left: 15px;
+  padding-right: 1rem;
+}
+
+.slogan-bar {
+  font-weight: 400;
+  font-size: 1.5rem;
+	padding: 10px 0 0px 0px;
+  text-align: center;
+  font-family: 'Fuzzy Bubbles';
+  line-height: 0.8rem;
+}

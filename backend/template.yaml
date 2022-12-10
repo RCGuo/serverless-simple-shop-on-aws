@@ -1,0 +1,1116 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: AWS microservice
+
+Parameters:
+  Stage:
+    Type: String
+    Default: dev
+  DynamoDBLocal:
+    Type: String
+    Default: ""
+  CheckoutEventSource:
+    Type: String
+    Default: com.simpleshopmicroservices.checkout
+  CheckoutEventDetailType:
+    Type: String
+    Default: Checkout Order
+  UpdateStatusEventDetailType:
+    Type: String
+    Default: Update Order Status
+  DeleteCartEventDetailType:
+    Type: String
+    Default: Delete All Cart Item
+  CognitoAdminlUserEmail:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /services/cognito/CognitoAdminlUserEmail
+  CognitoUserPoolDomain:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /services/cognito/CognitoUserPoolDomain
+  StripePrivateKey:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /services/Stripe/StripePrivateKey
+  StripeWebhookSecret:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /services/Stripe/StripeWebhookSecret
+  OpensearchDomainName:
+    Type: String
+    Default: simple-shop-search
+  OpensearchUserName:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /services/opensearch/username
+  OpensearchPassword:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /services/opensearch/password
+
+Globals:
+  Api:
+    OpenApiVersion: 3.0.1
+  Function:
+    Timeout: 10
+    MemorySize: 128
+    Architectures:
+      - x86_64
+    Runtime: go1.x
+    Environment:
+      Variables:
+        DYNAMODB_LOCAL: !Ref DynamoDBLocal
+
+Resources:
+  EcommerceRestApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: ServiceRestApi
+      StageName: !Ref Stage
+      EndpointConfiguration:
+        Type: REGIONAL
+      Cors:
+        AllowMethods: "'*'"
+        AllowHeaders: "'*'"
+        AllowOrigin: "'*'"
+        AllowCredentials: False
+      Auth:
+        DefaultAuthorizer: CognitoAuthorizer
+        AddDefaultAuthorizerToCorsPreflight: False
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: !GetAtt CognitoUserPool.Arn
+
+  SearchRestApi:
+      Type: AWS::Serverless::Api
+      Properties:
+        Name: SearchRestApi
+        StageName: !Ref Stage
+        EndpointConfiguration:
+          Type: REGIONAL
+        Cors:
+          AllowMethods: "'*'"
+          AllowHeaders: "'*'"
+          AllowOrigin: "'*'"
+        Auth:
+          DefaultAuthorizer: CognitoAuthorizer
+          AddDefaultAuthorizerToCorsPreflight: False
+          Authorizers:
+            CognitoAuthorizer:
+              UserPoolArn: !GetAtt CognitoUserPool.Arn
+
+  CartTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: CartTable
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
+        - AttributeName: productId
+          KeyType: RANGE
+      AttributeDefinitions:
+        - AttributeName: userId
+          AttributeType: S
+        - AttributeName: productId
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      TimeToLiveSpecification:
+          AttributeName: expirationTime
+          Enabled : true
+
+  FavoriteTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: FavoriteTable
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
+        - AttributeName: productId
+          KeyType: RANGE
+      AttributeDefinitions:
+        - AttributeName: userId
+          AttributeType: S
+        - AttributeName: productId
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+
+  ProductTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ProductTable
+      KeySchema:
+        - AttributeName: productId
+          KeyType: HASH
+      AttributeDefinitions:
+        - AttributeName: productId
+          AttributeType: S
+        - AttributeName: category
+          AttributeType: S
+        - AttributeName: topic
+          AttributeType: S
+      GlobalSecondaryIndexes:
+        - IndexName: category-index
+          KeySchema:
+          - AttributeName: category
+            KeyType: HASH
+          - AttributeName: productId
+            KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+        - IndexName: topic-index
+          KeySchema:
+          - AttributeName: topic
+            KeyType: HASH
+          - AttributeName: productId
+            KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+      BillingMode: PAY_PER_REQUEST
+
+  OrderTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: OrderTable
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
+        - AttributeName: paymentIntentId
+          KeyType: RANGE
+      AttributeDefinitions:
+        - AttributeName: userId
+          AttributeType: S
+        - AttributeName: paymentIntentId
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE  
+
+  GetProductFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      FunctionName: GetProduct
+      CodeUri: services/product/getProduct
+      Handler: main
+      Policies: 
+        - Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:Scan
+              - dynamodb:GetItem
+            Resource: !GetAtt ProductTable.Arn
+          - Effect: Allow
+            Action:
+              - dynamodb:Query
+            Resource: !Join 
+              - ''
+              - - !GetAtt ProductTable.Arn
+                - /index/*
+      Events:
+        GetProduct:
+          Type: Api
+          Properties:
+            Path: /product
+            Method: GET
+            RestApiId: !Ref EcommerceRestApi
+            Auth:
+              Authorizer: NONE
+      Environment:
+        Variables:
+          DYNAMODB_PRODUCT_TABLE_NAME: !Ref ProductTable
+    Metadata:
+      BuilderArgs: -trimpath
+
+  CreateProductFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      FunctionName: CreateProduct
+      CodeUri: services/product/createProduct
+      Handler: main
+      Policies: 
+        - Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:PutItem
+            Resource: !GetAtt ProductTable.Arn
+      Events:
+        CreateProduct:
+          Type: Api
+          Properties:
+            Path: /product
+            Method: POST
+            RestApiId: !Ref EcommerceRestApi
+      Environment:
+        Variables:
+          DYNAMODB_PRODUCT_TABLE_NAME: !Ref ProductTable
+    Metadata:
+      BuilderArgs: -trimpath
+     
+  DeleteProductFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      FunctionName: DeleteProduct
+      CodeUri: services/product/deleteProduct
+      Handler: main
+      Policies: 
+        - Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:DeleteItem
+            Resource: !GetAtt ProductTable.Arn
+      Events:
+        DeleteProduct:
+          Type: Api
+          Properties:
+            Path: /product/{productId}
+            Method: DELETE
+            RestApiId: !Ref EcommerceRestApi
+      Environment:
+        Variables:
+          DYNAMODB_PRODUCT_TABLE_NAME: !Ref ProductTable
+    Metadata:
+      BuilderArgs: -trimpath
+    
+  UpdateProductFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      FunctionName: UpdateProduct
+      CodeUri: services/product/updateProduct
+      Handler: main
+      Policies: 
+        - Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:UpdateItem
+            Resource: !GetAtt ProductTable.Arn
+      Events:
+        UpdateProduct:
+          Type: Api
+          Properties:
+            Path: /product/{productId}
+            Method: PUT
+            RestApiId: !Ref EcommerceRestApi
+      Environment:
+        Variables:
+          DYNAMODB_PRODUCT_TABLE_NAME: !Ref ProductTable
+    Metadata:
+      BuilderArgs: -trimpath
+
+  BatchWriteProductsFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      FunctionName: BatchWriteProducts
+      CodeUri: services/product/batchWriteProducts
+      Handler: main
+      Policies: 
+        - Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:BatchWriteItem
+            Resource: !GetAtt ProductTable.Arn
+      Events:
+        BatchWriteProducts:
+          Type: Api
+          Properties:
+            Path: /product/batch-write-item
+            Method: POST
+            RestApiId: !Ref EcommerceRestApi
+      Environment:
+        Variables:
+          DYNAMODB_PRODUCT_TABLE_NAME: !Ref ProductTable
+          IMAGE_CDN: !Sub https://${CloudFrontDistribution.DomainName}/public
+    Metadata:
+      BuilderArgs: -trimpath
+
+  HandleFavoriteFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      FunctionName: HandleFavorite
+      CodeUri: services/product/handleFavorite
+      Handler: main
+      Policies: 
+        - Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:PutItem
+              - dynamodb:DeleteItem
+              - dynamodb:Query
+            Resource: !GetAtt FavoriteTable.Arn
+      Events:
+        AddToFavorite:
+          Type: Api
+          Properties:
+            Path: /product/favorites
+            Method: POST
+            RestApiId: !Ref EcommerceRestApi
+        GetUserAllFavorites:
+          Type: Api
+          Properties:
+            Path: /product/favorites
+            Method: GET
+            RestApiId: !Ref EcommerceRestApi
+      Environment:
+        Variables:
+          DYNAMODB_FAVORITE_TABLE_NAME: !Ref FavoriteTable
+    Metadata:
+      BuilderArgs: -trimpath
+
+  BatchGetProductsByIdsFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      FunctionName: BatchGetProductsByIds
+      CodeUri: services/product/batchGetProductsByIds
+      Handler: main
+      Policies: 
+        - Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:BatchGetItem
+            Resource: !GetAtt ProductTable.Arn
+      Events:
+        BatchGetProductsByIds:
+          Type: Api
+          Properties:
+            Path: /product/batch-fetch
+            Method: POST
+            RestApiId: !Ref EcommerceRestApi
+            Auth:
+              Authorizer: NONE
+      Environment:
+        Variables:
+          DYNAMODB_PRODUCT_TABLE_NAME: !Ref ProductTable
+    Metadata:
+      BuilderArgs: -trimpath
+
+  GetCartItemsFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      FunctionName: GetCartItems
+      CodeUri: services/cart/getCartItems
+      Handler: main
+      Policies: 
+        - Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:Query
+              - dynamodb:GetItem
+            Resource: !GetAtt CartTable.Arn
+      Events:
+        GetCartItemByProductId:
+          Type: Api
+          Properties:
+            Path: /cart/{productId}
+            Method: GET
+            RestApiId: !Ref EcommerceRestApi
+        GetUserCartItems:
+          Type: Api
+          Properties:
+            Path: /cart
+            Method: GET
+            RestApiId: !Ref EcommerceRestApi
+      Environment:
+        Variables:
+          DYNAMODB_CART_TABLE_NAME: !Ref CartTable
+    Metadata:
+      BuilderArgs: -trimpath
+  
+  AddToCartFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      FunctionName: AddToCart
+      CodeUri: services/cart/addToCart
+      Handler: main
+      Policies: 
+        - Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:PutItem
+            Resource: !GetAtt CartTable.Arn
+      Events:
+        AddToCart:
+          Type: Api
+          Properties:
+            Path: /cart
+            Method: POST
+            RestApiId: !Ref EcommerceRestApi
+      Environment:
+        Variables:
+          DYNAMODB_CART_TABLE_NAME: !Ref CartTable
+    Metadata:
+      BuilderArgs: -trimpath
+
+  UpdateCartItemFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      FunctionName: UpdateCartItem
+      CodeUri: services/cart/updateCart
+      Handler: main
+      Policies: 
+        - Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:UpdateItem
+            Resource: !GetAtt CartTable.Arn
+      Events:
+        UpdateCartItem:
+          Type: Api
+          Properties:
+            Path: /cart
+            Method: PUT
+            RestApiId: !Ref EcommerceRestApi
+      Environment:
+        Variables:
+          DYNAMODB_CART_TABLE_NAME: !Ref CartTable
+    Metadata:
+      BuilderArgs: -trimpath
+
+  DeleteCartItemByIdFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      FunctionName: DeleteItemFromCart
+      CodeUri: services/cart/deleteCartItem
+      Handler: main
+      Policies: 
+        - Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:DeleteItem
+            Resource: !GetAtt CartTable.Arn
+      Events:
+        DeleteCartItemById:
+          Type: Api
+          Properties:
+            Path: /cart
+            Method: DELETE
+            RestApiId: !Ref EcommerceRestApi
+      Environment:
+        Variables:
+          DYNAMODB_CART_TABLE_NAME: !Ref CartTable
+    Metadata:
+      BuilderArgs: -trimpath
+ 
+  CreatePaymentIntentFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      FunctionName: CreatePaymentIntent
+      CodeUri: services/checkout/createPaymentIntent
+      Handler: main
+      Events:
+        CheckOutCart:
+          Type: Api
+          Properties:
+            Path: /checkout/create-payment-intent
+            Method: POST
+            RestApiId: !Ref EcommerceRestApi
+      Environment:
+        Variables:
+          STRIPE_PRIVATE_KEY: !Ref StripePrivateKey
+    Metadata:
+      BuilderArgs: -trimpath
+
+  StripeWebhookFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      FunctionName: StripeWebhook
+      CodeUri: services/checkout/stripeWebhook
+      Handler: main
+      Policies: 
+        - Statement:
+          - Effect: Allow
+            Action:
+              - events:PutEvents
+              - events:DescribeEventBus
+            Resource: !GetAtt CheckoutEventBus.Arn
+      Events:
+        StripeWebhook:
+          Type: Api
+          Properties:
+            Path: /payment/webhook
+            Method: POST
+            RestApiId: !Ref EcommerceRestApi
+            Auth:
+              Authorizer: NONE
+      Environment:
+        Variables:
+          STRIPE_WEBHOOK_SECRET: !Ref StripeWebhookSecret
+          EVENT_BUS_NAME: !Ref CheckoutEventBus
+          EVENT_SOURCE: !Ref CheckoutEventSource
+          CHECKOUT_EVENT_DETAILTYPE: !Ref CheckoutEventDetailType
+          UPDATE_STATUS_EVENT_DETAILTYPE: !Ref UpdateStatusEventDetailType
+          DELETE_CART_EVENT_DETAILTYPE: !Ref DeleteCartEventDetailType
+    Metadata:
+      BuilderArgs: -trimpath
+
+  CheckoutOrderWorker:
+    Type: AWS::Serverless::Function 
+    Properties:
+      FunctionName: CheckoutOrderWorker
+      CodeUri: services/checkout/checkoutOrderWorker
+      Handler: main
+      Policies: 
+        - Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:PutItem
+            Resource: !GetAtt OrderTable.Arn
+        - SQSPollerPolicy:
+            QueueName: !GetAtt CheckoutOrderSQS.Arn
+      Events:
+        CheckoutOrderSQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt CheckoutOrderSQS.Arn
+            BatchSize: 5
+      Environment:
+        Variables:
+          DYNAMODB_ORDER_TABLE_NAME: !Ref OrderTable
+    Metadata:
+      BuilderArgs: -trimpath
+
+  UpdateOrderStatusWorker:
+    Type: AWS::Serverless::Function 
+    Properties:
+      FunctionName: UpdateOrderStatusWorker
+      CodeUri: services/checkout/updateOrderStatusWorker
+      Handler: main
+      Policies: 
+        - Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:UpdateItem
+            Resource: !GetAtt OrderTable.Arn
+        - SQSPollerPolicy:
+            QueueName: !GetAtt UpdateOrderStatusSQS.Arn
+      Events:
+        UpdateOrderStatusSQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt UpdateOrderStatusSQS.Arn
+            BatchSize: 5
+      Environment:
+        Variables:
+          DYNAMODB_ORDER_TABLE_NAME: !Ref OrderTable
+    Metadata:
+      BuilderArgs: -trimpath
+
+  DeleteCartWorker:
+    Type: AWS::Serverless::Function 
+    Properties:
+      FunctionName: DeleteCartWorker
+      CodeUri: services/checkout/deleteCartWorker
+      Handler: main
+      Policies: 
+        - Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:BatchWriteItem
+            Resource: !GetAtt CartTable.Arn
+        - SQSPollerPolicy:
+            QueueName: !GetAtt DeleteCartSQS.Arn
+      Events:
+        DeleteCartSQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt DeleteCartSQS.Arn
+            BatchSize: 5
+      Environment:
+        Variables:
+          DYNAMODB_CART_TABLE_NAME: !Ref CartTable
+    Metadata:
+      BuilderArgs: -trimpath
+
+  GetPastOrdersFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      FunctionName: GetPastOrders
+      CodeUri: services/order/getPastOrders
+      Handler: main
+      Policies: 
+        - Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:Query
+            Resource: !GetAtt OrderTable.Arn
+      Events:
+        GetPastOrders:
+          Type: Api
+          Properties:
+            Path: /order/past-orders
+            Method: GET
+            RestApiId: !Ref EcommerceRestApi
+      Environment:
+        Variables:
+          DYNAMODB_ORDER_TABLE_NAME: !Ref OrderTable
+    Metadata:
+      BuilderArgs: -trimpath
+
+  CheckoutEventBus:
+    Type: AWS::Events::EventBus
+    Properties:
+      Name: CheckoutEventBus
+
+  CheckoutEventRule: 
+    Type: AWS::Events::Rule
+    Properties: 
+      Description: CheckoutEventRule
+      EventBusName: !Ref CheckoutEventBus
+      EventPattern: 
+        source: 
+          - !Ref CheckoutEventSource
+        detail-type: 
+          - !Ref CheckoutEventDetailType
+      Targets: 
+        - Arn: !GetAtt CheckoutOrderSQS.Arn
+          Id: CheckoutOrderSQS
+
+  UpdateOrderStatusEventRule: 
+    Type: AWS::Events::Rule
+    Properties: 
+      Description: UpdateCheckoutStatusEventRule
+      EventBusName: !Ref CheckoutEventBus
+      EventPattern: 
+        source: 
+          - !Ref CheckoutEventSource
+        detail-type: 
+          - !Ref UpdateStatusEventDetailType
+      Targets: 
+        - Arn: !GetAtt UpdateOrderStatusSQS.Arn
+          Id: UpdateOrderStatusSQS
+
+  DeleteCartEventRule: 
+    Type: AWS::Events::Rule
+    Properties: 
+      Description: DeleteCartEventRule
+      EventBusName: !Ref CheckoutEventBus
+      EventPattern: 
+        source: 
+          - !Ref CheckoutEventSource
+        detail-type: 
+          - !Ref DeleteCartEventDetailType
+      Targets: 
+        - Arn: !GetAtt DeleteCartSQS.Arn
+          Id: DeleteCartSQS
+
+  EventBridgeToSQSPolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action: SQS:SendMessage
+            Resource:  !GetAtt CheckoutOrderSQS.Arn
+          - Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action: SQS:SendMessage
+            Resource:  !GetAtt UpdateOrderStatusSQS.Arn
+          - Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action: SQS:SendMessage
+            Resource:  !GetAtt DeleteCartSQS.Arn
+      Queues:
+        - !Ref CheckoutOrderSQS
+        - !Ref UpdateOrderStatusSQS
+        - !Ref DeleteCartSQS
+
+  CheckoutOrderSQS:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: CheckoutOrderSQS
+      VisibilityTimeout: 10
+      MessageRetentionPeriod: 172800 # 2 days
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt CheckoutOrderDLQ.Arn
+        maxReceiveCount: 3
+
+  CheckoutOrderDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: CheckoutOrderDLQ
+      MessageRetentionPeriod: 345600 # 4 days
+
+  UpdateOrderStatusSQS:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: UpdateOrderStatusSQS
+      VisibilityTimeout: 10
+      MessageRetentionPeriod: 172800 # 2 days
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt UpdateOrderStatusDLQ.Arn
+        maxReceiveCount: 3
+
+  UpdateOrderStatusDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: UpdateOrderStatusDLQ
+      MessageRetentionPeriod: 345600 # 4 days
+
+  DeleteCartSQS:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: DeleteCartSQS
+      VisibilityTimeout: 10
+      MessageRetentionPeriod: 172800 # 2 days
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt DeleteCartDLQ.Arn
+        maxReceiveCount: 3
+
+  DeleteCartDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: DeleteCartDLQ
+      MessageRetentionPeriod: 345600 # 4 days
+
+  CognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: EcommerceUserPool
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 8
+            RequireLowercase: true
+            RequireUppercase: true
+            RequireNumbers: true
+            RequireSymbols: false
+        UsernameAttributes:
+          - email
+        AutoVerifiedAttributes:
+          - email
+        Schema:
+          - AttributeDataType: String
+            Name: email
+            Required: true
+          - AttributeDataType: String
+            Name: nickname
+            Required: true
+            
+  CognitoUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref CognitoUserPool
+      ClientName: EcommerceClient
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - USER_PASSWORD_AUTH
+      PreventUserExistenceErrors: ENABLED
+      SupportedIdentityProviders:
+        - "COGNITO"
+      CallbackURLs:
+        - "https://example.com/callback"
+      LogoutURLs:
+        - "https://example.com/signout"
+      AllowedOAuthFlows:
+        - "code"
+        - "implicit"
+      AllowedOAuthScopes:
+        - "aws.cognito.signin.user.admin"
+        - "email"
+        - "openid"
+        - "profile"
+      AllowedOAuthFlowsUserPoolClient: true
+
+  CognitoDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: !Ref CognitoUserPoolDomain
+      UserPoolId: !Ref CognitoUserPool
+
+  CognitoAdminGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties: 
+      Description: Admin user group
+      GroupName: admin
+      UserPoolId: !Ref CognitoUserPool
+
+  AdminlUser:
+      Type: AWS::Cognito::UserPoolUser
+      Properties:
+        DesiredDeliveryMediums:
+          - EMAIL
+        Username: !Ref CognitoAdminlUserEmail
+        UserPoolId: !Ref CognitoUserPool
+        UserAttributes:
+          - Name: nickname
+            Value: admin
+
+  AttachmentAdmin:
+    Type: AWS::Cognito::UserPoolUserToGroupAttachment
+    Properties: 
+      GroupName: admin
+      Username: !Ref AdminlUser
+      UserPoolId: !Ref CognitoUserPool
+
+  CloudFrontOriginAccessControl:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties: 
+      OriginAccessControlConfig:
+        Description: Default Origin Access Control
+        Name: !Ref AWS::StackName
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        Origins:
+          - Id: !Ref StaticWebsiteBucket
+            DomainName: !GetAtt StaticWebsiteBucket.DomainName
+            S3OriginConfig:
+              OriginAccessIdentity: ''
+            OriginAccessControlId: !GetAtt CloudFrontOriginAccessControl.Id
+          - Id: !Ref ImageCDNBucket
+            DomainName: !GetAtt ImageCDNBucket.DomainName
+            S3OriginConfig:
+              OriginAccessIdentity: ''
+            OriginAccessControlId: !GetAtt CloudFrontOriginAccessControl.Id
+        PriceClass: PriceClass_200
+        DefaultRootObject: index.html
+        DefaultCacheBehavior:
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+          Compress: true
+          AllowedMethods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - PATCH
+            - HEAD
+            - OPTIONS
+          TargetOriginId: !Ref StaticWebsiteBucket
+          ViewerProtocolPolicy: https-only
+        CacheBehaviors:
+          - CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+            AllowedMethods:
+              - GET
+              - HEAD
+            PathPattern: public/*
+            TargetOriginId: !Ref ImageCDNBucket
+            ViewerProtocolPolicy: allow-all
+        CustomErrorResponses:
+          - ErrorCachingMinTTL: 15
+            ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+
+  ImageCDNBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: serverless-simple-shop-image-cdn
+      AccessControl: Private
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+        BlockPublicPolicy: true
+        RestrictPublicBuckets: true
+
+  ImageCDNBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref ImageCDNBucket
+      PolicyDocument:
+        Statement:
+        - Action: s3:GetObject
+          Effect: Allow
+          Resource: !Sub ${ImageCDNBucket.Arn}/*
+          Principal:
+            Service: cloudfront.amazonaws.com
+          Condition:
+            StringEquals:
+              AWS:SourceArn: !Sub arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudFrontDistribution}
+
+  StaticWebsiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: serverless-simple-shop-website
+      AccessControl: Private
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+        BlockPublicPolicy: true
+        RestrictPublicBuckets: true
+
+  StaticWebsiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref StaticWebsiteBucket
+      PolicyDocument:
+        Statement:
+        - Action: s3:GetObject
+          Effect: Allow
+          Resource: !Sub ${StaticWebsiteBucket.Arn}/*
+          Principal:
+            Service: cloudfront.amazonaws.com
+          Condition:
+            StringEquals:
+              AWS:SourceArn: !Sub arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudFrontDistribution}
+
+  OpenSearchServiceDomain:
+    Type: AWS::OpenSearchService::Domain
+    Properties:
+      DomainName: !Ref OpensearchDomainName
+      AdvancedSecurityOptions:
+        Enabled: true
+        InternalUserDatabaseEnabled: true
+        MasterUserOptions:
+          MasterUserName: !Ref OpensearchUserName
+          MasterUserPassword: !Ref OpensearchPassword
+      ClusterConfig:
+        InstanceCount: 1
+        InstanceType: t3.small.search
+      EBSOptions:
+        EBSEnabled: true
+        VolumeSize: 10
+        VolumeType: gp2
+      AccessPolicies:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: "*"
+            Action: 'es:*'
+            Resource: !Sub arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/${OpensearchDomainName}/*
+      NodeToNodeEncryptionOptions:
+        Enabled: true
+      EncryptionAtRestOptions:
+        Enabled: true
+      DomainEndpointOptions:
+        EnforceHTTPS: true
+        TLSSecurityPolicy: Policy-Min-TLS-1-2-2019-07
+      AdvancedOptions:
+        rest.action.multi.allow_explicit_index: true
+
+  StreamOrderToOpenSearchFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: StreamOrderToOpenSearch
+      CodeUri: services/streaming/streamOrderToOpenSearch
+      Handler: main
+      Timeout: 10
+      Policies: 
+        - Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:DescribeStream
+              - dynamodb:GetRecords
+              - dynamodb:GetShardIterator
+              - dynamodb:ListStreams
+            Resource: !GetAtt OrderTable.StreamArn
+      Events:
+        Stream:
+          Type: DynamoDB
+          Properties:
+            Stream: !GetAtt OrderTable.StreamArn
+            BatchSize: 5
+            StartingPosition: LATEST
+      Environment:
+        Variables:
+          OPENSEARCH_DOMAIN: !Sub https://${OpenSearchServiceDomain.DomainEndpoint}
+          OPENSEARCH_USER: !Ref OpensearchUserName
+          OPENSEARCH_PASSWORD: !Ref OpensearchPassword
+
+  BullWriteProductIndexesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: BullWriteProductIndexes
+      CodeUri: services/search/bulkWriteProductIndexes
+      Handler: main
+      Events:
+        BullWriteProductIndexes:
+          Type: Api
+          Properties:
+            Path: /search/bulk-write
+            Method: POST
+            RestApiId: !Ref SearchRestApi
+      Environment:
+        Variables:
+          OPENSEARCH_DOMAIN: !Sub https://${OpenSearchServiceDomain.DomainEndpoint}
+          OPENSEARCH_USER: !Ref OpensearchUserName
+          OPENSEARCH_PASSWORD: !Ref OpensearchPassword
+          IMAGE_CDN: !Sub https://${CloudFrontDistribution.DomainName}/public
+    Metadata:
+      BuilderArgs: -trimpath
+
+  FuzzyQueryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: FuzzyQuery
+      CodeUri: services/search/fuzzyQuery
+      Handler: main
+      Events:
+        FuzzyQuery:
+          Type: Api
+          Properties:
+            Path: /search/fuzzy-query
+            Method: GET
+            RestApiId: !Ref SearchRestApi
+            Auth:
+              Authorizer: NONE
+      Environment:
+        Variables:
+          OPENSEARCH_DOMAIN: !Sub https://${OpenSearchServiceDomain.DomainEndpoint}
+          OPENSEARCH_USER: !Ref OpensearchUserName
+          OPENSEARCH_PASSWORD: !Ref OpensearchPassword
+    Metadata:
+      BuilderArgs: -trimpath
+
+  PurchasedRankingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: PurchasedRanking
+      CodeUri: services/search/purchasedRanking
+      Handler: main
+      Events:
+        SortRanking:
+          Type: Api
+          Properties:
+            Path: /search/purchased-ranking
+            Method: GET
+            RestApiId: !Ref SearchRestApi
+            Auth:
+              Authorizer: NONE
+      Environment:
+        Variables:
+          OPENSEARCH_DOMAIN: !Sub https://${OpenSearchServiceDomain.DomainEndpoint}
+          OPENSEARCH_USER: !Ref OpensearchUserName
+          OPENSEARCH_PASSWORD: !Ref OpensearchPassword
+
+Outputs:
+  EcommerceApiGatewayInvokeURL:
+    Description: "API Gateway endpoint URL for Prod stage for Multiply function"
+    Value: !Sub "https://${EcommerceRestApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/"
+
+  SearchApiGatewayInvokeURL:
+    Description: "API Gateway endpoint URL for Prod stage for Multiply function"
+    Value: !Sub "https://${SearchRestApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/"
+
+  CognitoUserPoolID:
+    Description: The Cognito UserPool ID
+    Value: !Ref CognitoUserPool
+
+  CognitoClientID:
+    Description: The Cognito UserPool Client ID
+    Value: !Ref CognitoUserPoolClient
+
+  CloudFrontDistributionDomainNmae:
+    Description: The Cloudfront for Simple Shop website S3 Bucket
+    Value: !GetAtt CloudFrontDistribution.DomainName
+    
+  CloudFrontDistributionURL:
+    Description: The Cloudfront for Simple Shop website S3 Bucket
+    Value: !Sub https://${CloudFrontDistribution.DomainName}
+
+  StaticWebsiteBucketWebsiteURL:
+    Description: The S3 Bucket for Simple Shop website
+    Value: !GetAtt StaticWebsiteBucket.WebsiteURL
+
+  ImageCDNBucketURL:
+    Description: The S3 Bucket for Simple Shop website product images
+    Value: !GetAtt ImageCDNBucket.WebsiteURL
+
+  OpenSearchServiceDomainArn:
+    Description: OpenSearch domain arn
+    Value: !GetAtt OpenSearchServiceDomain.Arn
+
+  OpenSearchServiceDomainDomainEndpoint:
+    Description: OpenSearch domainEndpoint
+    Value: !GetAtt OpenSearchServiceDomain.DomainEndpoint

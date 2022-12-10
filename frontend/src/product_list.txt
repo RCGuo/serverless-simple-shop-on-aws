@@ -1,0 +1,812 @@
+[
+  {
+    "name": "13-inch Apple Laptop",
+    "description": "",
+    "imageFile": "apple_laptop.jpg",
+    "category": "elects",
+    "price": 1163,
+    "company": "Apple",
+    "rating": 4.5,
+    "topic": "NA"
+  },
+  {
+    "name": "Apple iPhone",
+    "description": "",
+    "imageFile": "apple_phone.jpg",
+    "category": "elects",
+    "price": 289,
+    "company": "Apple",
+    "rating": 5,
+    "topic": "NA"
+  },
+  {
+    "name": "Black and White Wireless Headphones",
+    "description": "",
+    "imageFile": "black_and_white_wireless_headphones.jpg",
+    "category": "elects",
+    "price": 29.99,
+    "company": "Good company",
+    "rating": 3.5,
+    "topic": "NA"
+  },
+  {
+    "name": "Dell Notebook",
+    "description": "",
+    "imageFile": "black_dell_notebook.jpg",
+    "category": "elects",
+    "price": 1000,
+    "company": "Dell",
+    "rating": 4,
+    "topic": "NA"
+  },
+  {
+    "name": "Grey and Black Camera",
+    "description": "",
+    "imageFile": "grey_and_black_camera.jpg",
+    "category": "elects",
+    "price": 19.99,
+    "company": "Good company",
+    "rating": 3.5,
+    "topic": "NA"
+  },
+  {
+    "name": "High Capacity Hard Disk",
+    "description": "",
+    "imageFile": "high_capacity_hard_disk.jpg",
+    "category": "elects",
+    "price": 152,
+    "company": "Good company",
+    "rating": 5,
+    "topic": "NA"
+  },
+  {
+    "name": "Nikon DSLR Camera",
+    "description": "",
+    "imageFile": "nikon_dslr_camera.jpg",
+    "category": "elects",
+    "price": 52.5,
+    "company": "Good company",
+    "rating": 4.5,
+    "topic": "NA"
+  },
+  {
+    "name": "White Apple Mouse",
+    "description": "",
+    "imageFile": "white_apple_mouse.jpg",
+    "category": "elects",
+    "price": 123,
+    "company": "Good company",
+    "rating": 4,
+    "topic": "NA"
+  },
+  {
+    "name": "Brown Leather Sneakers",
+    "description": "",
+    "imageFile": "brown_leather_sneakers.jpg",
+    "category": "fashion",
+    "price": 220,
+    "company": "Good company",
+    "rating": 3.5,
+    "topic": "NA"
+  },
+  {
+    "name": "Clear Glass Perfume",
+    "description": "",
+    "imageFile": "clear_glass_perfume.jpg",
+    "category": "fashion",
+    "price": 72,
+    "company": "Good company",
+    "rating": 2.5,
+    "topic": "NA"
+  },
+  {
+    "name": "Handmade Leather Wallet",
+    "description": "",
+    "imageFile": "handmade_leather_wallet.jpg",
+    "category": "fashion",
+    "price": 30,
+    "company": "Good company",
+    "rating": 3,
+    "topic": "NA"
+  },
+  {
+    "name": "Adidas Yellow T-shirt",
+    "description": "",
+    "imageFile": "adidas_yellow_tshirt.jpg",
+    "category": "fashion",
+    "price": 14,
+    "company": "Adidas",
+    "rating": 4,
+    "topic": "NA"
+  },
+  {
+    "name": "CURREN Brand Watch for Men",
+    "description": "",
+    "imageFile": "curren_brand_watch_for_men.jpg",
+    "category": "fashion",
+    "price": 6.4,
+    "company": "CURREN",
+    "rating": 4.5,
+    "topic": "NA"
+  },
+  {
+    "name": "Nike Air Jordan",
+    "description": "",
+    "imageFile": "nike_air_jordan.jpg",
+    "category": "fashion",
+    "price": 105,
+    "company": "Nike",
+    "rating": 5,
+    "topic": "NA"
+  },
+  {
+    "name": "Three-Eye Decoration Men's Watch",
+    "description": "",
+    "imageFile": "three_eye_decoration_mens_watch.jpg",
+    "category": "fashion",
+    "price": 18.99,
+    "company": "Good company",
+    "rating": 5,
+    "topic": "NA"
+  },
+  {
+    "name": "White Wedding High Heels",
+    "description": "",
+    "imageFile": "white_wedding_high_heels.jpg",
+    "category": "fashion",
+    "price": 206,
+    "company": "Good company",
+    "rating": 4.5,
+    "topic": "NA"
+  },
+  {
+    "name": "Blue Perfume",
+    "description": "",
+    "imageFile": "blue_perfume.jpg",
+    "category": "fashion",
+    "price": 12,
+    "company": "Good company",
+    "rating": 3,
+    "topic": "NA"
+  },
+  {
+    "name": "Ray Ban Sunglasses",
+    "description": "",
+    "imageFile": "ray_ban_sunglasses.jpg",
+    "category": "fashion",
+    "price": 77,
+    "company": "Ray Ban",
+    "rating": 4.5,
+    "topic": "NA"
+  },
+  {
+    "name": "Women's Rockstud Bag",
+    "description": "",
+    "imageFile": "womens_rockstud_bag.jpg",
+    "category": "fashion",
+    "price": 27,
+    "company": "Good company",
+    "rating": 3,
+    "topic": "NA"
+  },
+  {
+    "name": "Women's Yellow Long-sleeved Dress",
+    "description": "",
+    "imageFile": "womens_yellow_long_sleeved_dress.jpg",
+    "category": "fashion",
+    "price": 17.99,
+    "company": "Good company",
+    "rating": 3,
+    "topic": "NA"
+  },
+  {
+    "name": "A Set of Shaving Tools",
+    "description": "",
+    "imageFile": "a_set_of_shaving_tools.jpg",
+    "category": "house",
+    "price": 10.29,
+    "company": "Good company",
+    "rating": 3,
+    "topic": "NA"
+  },
+  {
+    "name": "Electric Shaver",
+    "description": "",
+    "imageFile": "electric_shaver.jpg",
+    "category": "house",
+    "price": 43,
+    "company": "Good company",
+    "rating": 4.5,
+    "topic": "NA"
+  },
+  {
+    "name": "Mermaid Cat Pillow",
+    "description": "",
+    "imageFile": "mermaid_cat_pillow.jpg",
+    "category": "house",
+    "price": 9.99,
+    "company": "Good company",
+    "rating": 3,
+    "topic": "NA"
+  },
+  {
+    "name": "Wooden Toothbrush",
+    "description": "",
+    "imageFile": "wooden_toothbrush.jpg",
+    "category": "house",
+    "price": 17.99,
+    "company": "Good company",
+    "rating": 3.5,
+    "topic": "NA"
+  },
+  {
+    "name": "Herbal Soap & Bath Brush",
+    "description": "",
+    "imageFile": "herbal_soap_and_bath_brush.jpg",
+    "category": "house",
+    "price": 16.45,
+    "company": "Good company",
+    "rating": 5,
+    "topic": "NA"
+  },
+  {
+    "name": "Herbal Soap",
+    "description": "",
+    "imageFile": "herbal_soap.jpg",
+    "category": "house",
+    "price": 3.45,
+    "company": "Good company",
+    "rating": 4,
+    "topic": "NA"
+  },
+  {
+    "name": "Bamboo Toothbrush",
+    "description": "",
+    "imageFile": "bamboo_toothbrush.jpg",
+    "category": "house",
+    "price": 20,
+    "company": "Good company",
+    "rating": 3.5,
+    "topic": "NA"
+  },
+  {
+    "name": "Pink Dust Shovel",
+    "description": "",
+    "imageFile": "pink_dust_shovel.jpg",
+    "category": "house",
+    "price": 2.99,
+    "company": "Good company",
+    "rating": 2.5,
+    "topic": "NA"
+  },
+  {
+    "name": "Reed Diffuser",
+    "description": "",
+    "imageFile": "reed_diffuser.jpg",
+    "category": "house",
+    "price": 33,
+    "company": "Good company",
+    "rating": 3,
+    "topic": "NA"
+  },
+  {
+    "name": "Silver and White Desk Lamp",
+    "description": "",
+    "imageFile": "silver_and_white_desk_lamp.jpg",
+    "category": "house",
+    "price": 24.99,
+    "company": "Good company",
+    "rating": 4,
+    "topic": "NA"
+  },
+  {
+    "name": "Swiffer",
+    "description": "",
+    "imageFile": "swiffer.jpg",
+    "category": "house",
+    "price": 19,
+    "company": "Good company",
+    "rating": 3.5,
+    "topic": "NA"
+  },
+  {
+    "name": "White Coffee Mug",
+    "description": "",
+    "imageFile": "white_coffee_mug.jpg",
+    "category": "house",
+    "price": 15,
+    "company": "Good company",
+    "rating": 4,
+    "topic": "NA"
+  },
+  {
+    "name": "Grey Desk Fan",
+    "description": "",
+    "imageFile": "grey_desk_fan.jpg",
+    "category": "house",
+    "price": 18.99,
+    "company": "Good company",
+    "rating": 3,
+    "topic": "NA"
+  },
+  {
+    "name": "Toilet Paper",
+    "description": "",
+    "imageFile": "toilet_paper.jpg",
+    "category": "house",
+    "price": 7.49,
+    "company": "Good company",
+    "rating": 3.5,
+    "topic": "NA"
+  },
+  {
+    "name": "Stripe Hand Towels",
+    "description": "",
+    "imageFile": "stripe_hand_towels.jpg",
+    "category": "house",
+    "price": 24.99,
+    "company": "Good company",
+    "rating": 5,
+    "topic": "NA"
+  },
+  {
+    "name": "White Dog Food Stock",
+    "description": "",
+    "imageFile": "white_dog_food_stock.jpg",
+    "category": "pet",
+    "price": 24.99,
+    "company": "Good company",
+    "rating": 3,
+    "topic": "NA"
+  },
+  {
+    "name": "Tasty Dog Treats",
+    "description": "",
+    "imageFile": "tasty_dog_treats.jpg",
+    "category": "pet",
+    "price": 5,
+    "company": "Good company",
+    "rating": 4.5,
+    "topic": "NA"
+  },
+  {
+    "name": "Portable Cat Backpack",
+    "description": "",
+    "imageFile": "portable_cat_backpack.jpg",
+    "category": "pet",
+    "price": 39.99,
+    "company": "Good company",
+    "rating": 4,
+    "topic": "NA"
+  },
+  {
+    "name": "Cat Scratching Post",
+    "description": "",
+    "imageFile": "cat_scratching_post.jpg",
+    "category": "pet",
+    "price": 24.99,
+    "company": "Good company",
+    "rating": 4,
+    "topic": "NA"
+  },
+  {
+    "name": "5 floor cat Tree",
+    "description": "",
+    "imageFile": "5_floor_cat_tree.jpg",
+    "category": "pet",
+    "price": 230,
+    "company": "Good company",
+    "rating": 5,
+    "topic": "NA"
+  },
+  {
+    "name": "Soft dog bed",
+    "description": "",
+    "imageFile": "soft_dog_bed.jpg",
+    "category": "pet",
+    "price": 21.75,
+    "company": "Good company",
+    "rating": 3.5,
+    "topic": "NA"
+  },
+  {
+    "name": "Pet Teepee Tent for Dogs & Cats",
+    "description": "",
+    "imageFile": "pet_teepee_tent_for_dogs_and_cats.jpg",
+    "category": "pet",
+    "price": 39.99,
+    "company": "Good company",
+    "rating": 3,
+    "topic": "NA"
+  },
+  {
+    "name": "Color Frisbee",
+    "description": "",
+    "imageFile": "color_frisbee.jpg",
+    "category": "sport",
+    "price": 7.81,
+    "company": "Good company",
+    "rating": 3.5,
+    "topic": "NA"
+  },
+  {
+    "name": "Color Yoga Mat",
+    "description": "",
+    "imageFile": "color_yoga_mat.jpg",
+    "category": "sport",
+    "price": 19.99,
+    "company": "Good company",
+    "rating": 3,
+    "topic": "NA"
+  },
+  {
+    "name": "Adidas Sports Shoes",
+    "description": "",
+    "imageFile": "adidas_sports_shoes.jpg",
+    "category": "sport",
+    "price": 65,
+    "company": "Adidas",
+    "rating": 3,
+    "topic": "NA"
+  },
+  {
+    "name": "Indoor-Outdoor Basketball",
+    "description": "",
+    "imageFile": "indoor_outdoor_basketball.jpg",
+    "category": "sport",
+    "price": 33.19,
+    "company": "Good company",
+    "rating": 3.5,
+    "topic": "NA"
+  },
+  {
+    "name": "Mountain Bike",
+    "description": "",
+    "imageFile": "mountain_bike.jpg",
+    "category": "sport",
+    "price": 300,
+    "company": "Good company",
+    "rating": 3,
+    "topic": "NA"
+  },
+  {
+    "name": "Baseball Glove",
+    "description": "",
+    "imageFile": "baseball_glove.jpg",
+    "category": "sport",
+    "price": 21.99,
+    "company": "Good company",
+    "rating": 4,
+    "topic": "NA"
+  },
+  {
+    "name": "Tennis Racket",
+    "description": "",
+    "imageFile": "tennis_racket.jpg",
+    "category": "sport",
+    "price": 28.14,
+    "company": "Good company",
+    "rating": 3,
+    "topic": "NA"
+  },
+  {
+    "name": "5KG Dumbbells",
+    "description": "",
+    "imageFile": "5kg_dumbbells.jpg",
+    "category": "sport",
+    "price": 24.99,
+    "company": "Good company",
+    "rating": 3,
+    "topic": "NA"
+  },
+  {
+    "name": "3x3 Rubik's Cube",
+    "description": "",
+    "imageFile": "3_3_Rubiks_ube.jpg",
+    "category": "toys",
+    "price": 7.19,
+    "company": "Good company",
+    "rating": 5,
+    "topic": "NA"
+  },
+  {
+    "name": "Soft Stuffed Bear Plush Toy",
+    "description": "",
+    "imageFile": "soft_stuffed_bear_plush_toy.jpg",
+    "category": "toys",
+    "price": 37.99,
+    "company": "Good company",
+    "rating": 4,
+    "topic": "NA"
+  },
+  {
+    "name": "Colorful Wooden Spin Toy",
+    "description": "",
+    "imageFile": "colorful_wooden_spin_toy.jpg",
+    "category": "toys",
+    "price": 12.99,
+    "company": "Good company",
+    "rating": 3.5,
+    "topic": "NA"
+  },
+  {
+    "name": "Brown Bear Plush Toy",
+    "description": "",
+    "imageFile": "brown_bear_plush_toy.jpg",
+    "category": "toys",
+    "price": 37.99,
+    "company": "Good company",
+    "rating": 4.5,
+    "topic": "NA"
+  },
+  {
+    "name": "Multicolored Animal Balling Ball Pins",
+    "description": "",
+    "imageFile": "multicolored_animal_balling_ball_pins.jpg",
+    "category": "toys",
+    "price": 18,
+    "company": "Good company",
+    "rating": 3,
+    "topic": "NA"
+  },
+  {
+    "name": "Robot Toy Riding A Scooter",
+    "description": "",
+    "imageFile": "robot_toy_riding_a_scooter.jpg",
+    "category": "toys",
+    "price": 24.99,
+    "company": "Good company",
+    "rating": 3,
+    "topic": "NA"
+  },
+  {
+    "name": "Yellow Toy Truck",
+    "description": "",
+    "imageFile": "yellow_toy_truck.jpg",
+    "category": "toys",
+    "price": 13.91,
+    "company": "Good company",
+    "rating": 3,
+    "topic": "NA"
+  },
+  {
+    "name": "Brown Teddy Bear",
+    "description": "",
+    "imageFile": "brown_teddy_bear.jpg",
+    "category": "toys",
+    "price": 32,
+    "company": "Good company",
+    "rating": 5,
+    "topic": "NA"
+  },
+  {
+    "name": "White Sheep Plush Toy",
+    "description": "",
+    "imageFile": "white_sheep_plush_toy.jpg",
+    "category": "toys",
+    "price": 14.49,
+    "company": "Good company",
+    "rating": 4,
+    "topic": "NA"
+  },
+  {
+    "name": "Wooden Figurines",
+    "description": "",
+    "imageFile": "wooden_figurines.jpg",
+    "category": "toys",
+    "price": 9.59,
+    "company": "Good company",
+    "rating": 3.5,
+    "topic": "NA"
+  },
+  {
+    "name": "Yellow Cube",
+    "description": "",
+    "imageFile": "yellow_cube.jpg",
+    "category": "toys",
+    "price": 0.99,
+    "company": "Good company",
+    "rating": 3.5,
+    "topic": "NA"
+  },
+  {
+    "name": "Boy and Girl Sitting on Bench Toy",
+    "description": "",
+    "imageFile": "boy_and_girl_sitting_on_bench_toy.jpg",
+    "category": "toys",
+    "price": 0.99,
+    "company": "Good company",
+    "rating": 3,
+    "topic": "NA"
+  },
+  {
+    "name": "Blue Christmas Sweater",
+    "description": "",
+    "imageFile": "blue_christmas_sweater.jpg",
+    "category": "winter",
+    "price": 30,
+    "company": "Good company",
+    "rating": 4.5,
+    "topic": "winter"
+  },
+  {
+    "name": "Women's Color Short Boot",
+    "description": "",
+    "imageFile": "womens_color_short_boot.jpg",
+    "category": "winter",
+    "price": 25.09,
+    "company": "Good company",
+    "rating": 3.5,
+    "topic": "winter"
+  },
+  {
+    "name": "Women's Ankle Boots",
+    "description": "",
+    "imageFile": "womens_ankle_boots.jpg",
+    "category": "winter",
+    "price": 0.99,
+    "company": "Good company",
+    "rating": 3,
+    "topic": "winter"
+  },
+  {
+    "name": "Thick Knit Winter Warm Socks",
+    "description": "",
+    "imageFile": "thick_knit_winter_warm_socks.jpg",
+    "category": "winter",
+    "price": 0.99,
+    "company": "Good company",
+    "rating": 3,
+    "topic": "winter"
+  },
+  {
+    "name": "Brown Leather Gloves",
+    "description": "",
+    "imageFile": "brown_leather_gloves.jpg",
+    "category": "winter",
+    "price": 20,
+    "company": "Good company",
+    "rating": 3,
+    "topic": "winter"
+  },
+  {
+    "name": "Womens Pajama Sets Long Sleeve",
+    "description": "",
+    "imageFile": "womens_pajama_sets_long_sleeve.jpg",
+    "category": "winter",
+    "price": 0.99,
+    "company": "Good company",
+    "rating": 5,
+    "topic": "winter"
+  },
+  {
+    "name": "Korean fashion platforms chunky heels",
+    "description": "",
+    "imageFile": "korean_fashion_platforms_chunky_heels.jpg",
+    "category": "winter",
+    "price": 37,
+    "company": "Good company",
+    "rating": 3.5,
+    "topic": "winter"
+  },
+  {
+    "name": "Pink Trendy Fluffy Bomber",
+    "description": "",
+    "imageFile": "pink_trendy_fluffy_bomber.jpg",
+    "category": "winter",
+    "price": 1.99,
+    "company": "Good company",
+    "rating": 4,
+    "topic": "winter"
+  },
+  {
+    "name": "Linen Cotton Socks",
+    "description": "",
+    "imageFile": "linen_cotton_socks.jpg",
+    "category": "winter",
+    "price": 1.99,
+    "company": "Good company",
+    "rating": 4,
+    "topic": "winter"
+  },
+  {
+    "name": "Women's Elle Boot",
+    "description": "",
+    "imageFile": "womens_elle_boot.jpg",
+    "category": "winter",
+    "price": 91.30,
+    "company": "Good company",
+    "rating": 5,
+    "topic": "winter"
+  },
+  {
+    "name": "White Pyjamas",
+    "description": "",
+    "imageFile": "white_pyjamas.jpg",
+    "category": "winter",
+    "price": 22,
+    "company": "Good company",
+    "rating": 4,
+    "topic": "winter"
+  },
+  {
+    "name": "Women's stylish outfit",
+    "description": "",
+    "imageFile": "womens_stylish_outfit.jpg",
+    "category": "winter",
+    "price": 33.98,
+    "company": "Good company",
+    "rating": 3,
+    "topic": "winter"
+  },
+  {
+    "name": "Gray Turtleneck Long Sleeve Sweater",
+    "description": "",
+    "imageFile": "gray_turtleneck_long_sleeve_sweater.jpg",
+    "category": "winter",
+    "price": 17.90,
+    "company": "Good company",
+    "rating": 5,
+    "topic": "winter"
+  },
+  {
+    "name": "Woman Wearing Green Sweater",
+    "description": "",
+    "imageFile": "woman_wearing_green_sweater.jpg",
+    "category": "winter",
+    "price": 0.99,
+    "company": "Good company",
+    "rating": 3,
+    "topic": "winter"
+  },
+  {
+    "name": "Men's Brown Leather Boot",
+    "description": "",
+    "imageFile": "mens_brown_leather_boot.jpg",
+    "category": "winter",
+    "price": 120,
+    "company": "Good company",
+    "rating": 3,
+    "topic": "winter"
+  },
+  {
+    "name": "Yellow Winter Jacket",
+    "description": "",
+    "imageFile": "yellow_winter_jacket.jpg",
+    "category": "winter",
+    "price": 95,
+    "company": "Good company",
+    "rating": 4,
+    "topic": "winter"
+  },
+  {
+    "name": "Women's Brown Coat",
+    "description": "",
+    "imageFile": "womens_brown_coat.jpg",
+    "category": "winter",
+    "price": 120,
+    "company": "Good company",
+    "rating": 4.5,
+    "topic": "winter"
+  },
+  {
+    "name": "Women's White Coat",
+    "description": "",
+    "imageFile": "womens_white_coat.jpg",
+    "category": "winter",
+    "price": 230,
+    "company": "Good company",
+    "rating": 5,
+    "topic": "winter"
+  },
+  {
+    "name": "Men's Grey Funnel Neck Coat",
+    "description": "",
+    "imageFile": "mens_grey_funnel_neck_coat.jpg",
+    "category": "winter",
+    "price": 210,
+    "company": "Good company",
+    "rating": 3.5,
+    "topic": "winter"
+  }
+]

@@ -1,0 +1,19 @@
+
+#kiss-face {
+  color:#ff5733;
+  font-size:1.9rem;
+  top: 5px;
+}
+
+#kiss-face:hover{
+  color: #b433ff;
+}
+
+#meh-face {
+  color: #ffad00;
+  font-size:1.9rem;
+}
+
+#meh-face:hover{
+  color: #ff5733;
+}

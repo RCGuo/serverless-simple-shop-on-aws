@@ -1,0 +1,52 @@
+@font-face {
+  font-family: 'Fuzzy Bubbles';
+  font-style: normal;
+  font-weight: 400;
+  src: url('resources/fonts/Fuzzy_Bubbles/FuzzyBubbles-Regular.ttf');
+  
+}
+
+@font-face {
+  font-family: 'Fuzzy Bubbles';
+  font-style: normal;
+  font-weight: bold;
+  src: url('resources/fonts/Fuzzy_Bubbles/FuzzyBubbles-Bold.ttf');
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-size: 13pt;
+  font-family: Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  height: 100vh;
+  width: 100vw;
+}
+
+@media only screen and (max-width: 464px) {
+  html {
+    font-size: 65%;
+  }
+};
+
+@media only screen and (max-width: 720px) {
+  html {
+    font-size: 72%;
+  }
+};
+
+@media only screen and (max-width: 1024px) {
+  html {
+    font-size: 100%;
+  }
+};
+
+@media only screen and (min-width: 1280px) {
+  html {
+    font-size: 115%;
+  }
+};

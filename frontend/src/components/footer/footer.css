@@ -1,0 +1,11 @@
+.footer-container {
+  background: white;
+}
+
+.footer-container .bottom-bar {
+  background: #333333;
+  padding-top: 18px;
+  padding-bottom: 18px;
+  color: #fff;
+  font-size: 0.8rem;
+}

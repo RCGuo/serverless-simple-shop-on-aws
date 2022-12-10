@@ -1,0 +1,39 @@
+
+.truncate {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+}
+
+.truncate:hover {
+  width: auto;
+  overflow: visible; 
+  white-space: normal;
+}
+
+#favorite-name {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color:rgb(62, 99, 211);
+}
+
+#favorite-price {
+  font-size: 1.3rem;
+  /* font-weight: bold; */
+  /* color:rgb(62, 99, 211); */
+}
+
+#favorite-trash, #favorite-shopping, #past-order-items-icon {
+  background-color: transparent;
+  border: none;
+  cursor: pointer; 
+}
+
+#favorite-trash:hover {
+  color:red;
+}
+
+#favorite-shopping:hover {
+  color:orange
+}

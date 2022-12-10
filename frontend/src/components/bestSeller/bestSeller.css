@@ -1,0 +1,30 @@
+.best-seller {
+  background-color:#ffdfa4;
+}
+
+.best-heading-slide {
+  color: #383838;
+  font-size: 2.2rem;
+  vertical-align: middle;
+  margin: auto;
+}
+
+.best-heading-slide #subtitle {
+  font-size: 0.8rem;
+}
+
+.swiper {
+  background-color: #ffdfa4;
+}
+
+.swiper-slide img {
+  object-fit: cover;
+  max-height: 260px;
+  min-height: 260px;
+  width: 95%;
+}
+
+.swiper-wrapper {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}

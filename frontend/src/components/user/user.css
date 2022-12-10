@@ -1,0 +1,39 @@
+@media all and (min-width: 480px) {
+  .signup-container {
+    padding: 60px 0;
+  }
+
+  .signup-container form {
+    margin: 0 auto;
+    max-width: 320px;
+    font-weight: bold;
+  }
+  
+  .login-container {
+    padding: 60px 0;
+  }
+
+  .login-container form {
+    margin: 0 auto;
+    max-width: 320px;
+    font-weight: bold;
+  }
+}
+
+.signup-container form .help-block {
+  font-size: 1rem;
+  padding-bottom: 10px;
+  color: #999;
+}
+
+.login-title {
+  text-align: center;
+  font-weight: bold;
+  font-size: 2rem;
+}
+
+.signup-title {
+  text-align: center;
+  font-weight: bold;
+  font-size: 2rem;
+}
