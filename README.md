@@ -44,29 +44,29 @@ Service APIs created with Amazon API Gateway and restrict access using Cognito U
 
 ### Product Service
 
-GET /product?category=:category (GetProductByCategory)
-GET /product?topic=:topic (GetProductByTopic)
-GET /product?productId=:productId (getProductById)
-GET /product/batch-fetch (BatchGetProductsByIds)
-POST /product (CreateProduct)
-POST /product/batch-write-item (BatchWriteProducts)
-PUT /product/{UpdateProduct}
-DELETE /product/{productId} (DeleteProduct)
-GET /product/favorites (GetUserAllFavorites)
-POST /product/favorites (AddToFavorite)
+GET /product?category=:category (GetProductByCategory) \
+GET /product?topic=:topic (GetProductByTopic) \
+GET /product?productId=:productId (getProductById) \
+GET /product/batch-fetch (BatchGetProductsByIds) \
+POST /product (CreateProduct) \
+POST /product/batch-write-item (BatchWriteProducts) \
+PUT /product/{productId} (UpdateProduct) \
+DELETE /product/{productId} (DeleteProduct) \
+GET /product/favorites (GetUserAllFavorites) \
+POST /product/favorites (AddToFavorite)  
 
 ### Cart Service
 
-GET /cart (GetUserCartItems)
-GET /cart/{productId} (GetCartItemByProductId)
-POST /cart (AddToCartFunction)
-PUT /cart (UpdateCartItem)
-DELETE /cart (DeleteItemFromCart)
+GET /cart (GetUserCartItems) \
+GET /cart/{productId} (GetCartItemByProductId) \
+POST /cart (AddToCartFunction) \
+PUT /cart (UpdateCartItem) \
+DELETE /cart (DeleteItemFromCart) 
 
 ### Checkout Service
 
-POST /checkout/create-payment-intent (CreatePaymentIntent)
-POST /payment/webhook (StripeWebhook)
+POST /checkout/create-payment-intent (CreatePaymentIntent) \
+POST /payment/webhook (StripeWebhook) 
 
 ### Order Service
 
@@ -74,9 +74,9 @@ GET /order/past-orders (GetPastOrders)
 
 ### Search Service
 
-GET /search/fuzzy-query (FuzzyQueryFunction)
-GET /search/purchased-ranking (PurchasedRankingFunction)
-POST /search/bulk-write (BullWriteProductIndexesFunction)
+GET /search/fuzzy-query (FuzzyQueryFunction) \
+GET /search/purchased-ranking (PurchasedRankingFunction) \
+POST /search/bulk-write (BullWriteProductIndexesFunction) 
 
 ## EventBridge and SQS Integration
 
@@ -90,7 +90,7 @@ Serverless is all about functions and events by nature. Amazon EventBridge can r
 
 ## DynamoDB Stream and OpenSearch Integration
 
-In order to get top selling products for our simple shop website, we enable stream on the Order Table, any new item event in the Order Table will be captured by DynamoDB Stream and send as **New image** (the entire item) to the invoked Lambda function. The invoked function parses the new order data and updates <code>counter</code> field value of documents by product in the <code>product-sold-counter</code> index to the OpenSearch domain cluster. Whenever a user visits the website, we will select the top 20 best-selling products to display on the website by querying the ranking results of the <code>product-sold-counter</code> index.
+In order to get top selling products for our simple shop website by querying api, we enable stream on the Order Table, any new item event in the Order Table will be captured by DynamoDB Stream and send as **New image** (the entire item) to the invoked Lambda function. The invoked function parses the new order data and updates <code>counter</code> field value of documents by product in the <code>product-sold-counter</code> index to the OpenSearch domain cluster. So, we can execute sorting on <code>counter</code> field to list top selling product by querying PurchasedRanking api.
 
 
 ## Reference
