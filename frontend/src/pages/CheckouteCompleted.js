@@ -21,7 +21,7 @@ const CheckoutCompleted = () => {
   return (
     <Container className="checkout-completed-container mt-5 pt-4">
       <Row className="text-center">
-        <Col lg={9}>
+        <Col>
           <h1>{message}</h1>
           <Button className="mt-3" as={Link} to="/past-orders" variant="warning">View past order</Button>
         </Col>

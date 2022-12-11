@@ -32,7 +32,11 @@ const PastOrders = () => {
           API.post("shopApi", '/product/batch-fetch', {
             body: resp,
           }).then((data) => {
-            setFavorites(data);
+            if( data == null ) {
+              setFavorites([]);
+            } else {
+              setFavorites(data);
+            }
             setFavorLoading(false);
           });
         });
