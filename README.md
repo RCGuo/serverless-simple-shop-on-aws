@@ -46,7 +46,7 @@ Service APIs created with Amazon API Gateway and restrict access using Cognito U
 
 GET /product?category=:category (GetProductByCategory) \
 GET /product?topic=:topic (GetProductByTopic) \
-GET /product?productId=:productId (getProductById) \
+GET /product?productId=:productId (GetProductById) \
 GET /product/batch-fetch (BatchGetProductsByIds) \
 POST /product (CreateProduct) \
 POST /product/batch-write-item (BatchWriteProducts) \
@@ -77,6 +77,48 @@ GET /order/past-orders (GetPastOrders)
 GET /search/fuzzy-query (FuzzyQueryFunction) \
 GET /search/purchased-ranking (PurchasedRankingFunction) \
 POST /search/bulk-write (BullWriteProductIndexesFunction) 
+
+## DynamoDB Tables
+
+### Product Table
+
+| Partition key | Sort key | Attributes |
+|---|---|---|
+| productId || name, description, imageFile, company, rating, topic, category, price |
+
+#### Global Secondary Indexes
+##### topic-index
+| Partition key | Sort key |
+|---|---|
+| category | productId |
+
+##### category-index
+
+| Partition key | Sort key |
+|---|---|
+| topic | productId |
+
+### Favorite Table
+
+| Partition key | Sort key | Attributes |
+|---|---|---|
+| userId | productId |  |
+
+### Cart Table
+
+The <code>expirationTime</code> attribute is set as the TTL attribute on the table.
+
+| Partition key | Sort key | Attributes |
+|---|---|---|
+| userId | productId | quantity, price, expirationTime |
+
+### Order Table
+
+| Partition key | Sort key | Attributes |
+|---|---|---|
+| userId | paymentIntentId | orderId, total, shippingFee, address, email, items, orderDate, paymentStatus, subtotal |
+
+
 
 ## EventBridge and SQS Integration
 
