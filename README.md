@@ -4,7 +4,8 @@ Serverless Simple Shop is a cloud-native demo application, with basic E-commerce
 
 It is a full-stack application implements event-driven microservices architecture with using AWS serverless services *for demonstration purpose only*. Its backend is written in Golang with a frontend UI written in ReactJS. Such an architecture reduces operational costs, and management overheads, and enables high scalability and availability without additional effort from the developer.
 
-Demo: [https://d3sjpgg015wjwv.cloudfront.net](https://d3sjpgg015wjwv.cloudfront.net)
+Demo: [https://d3sjpgg015wjwv.cloudfront.net](https://d3sjpgg015wjwv.cloudfront.net) \
+(Sign up to create a new account or use our test account email: simpletester@mail.com  passwd: Test12345)
 
 
 ## Architecture Diagram 
